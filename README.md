@@ -69,7 +69,7 @@ mvn test
 
 ### Step 5: Make Your Changes
 
-1. Work on the coding challenge as instructed during the interview
+1. Work on the coding challenge as instructed [SCREENING_INSTRUCTIONS.md](SCREENING_INSTRUCTIONS.md)
 2. Test your changes locally
 3. Commit your changes:
 
