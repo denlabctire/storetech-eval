@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cantire.storetech.evaluation.dto.CartSaveRequest;
 import com.cantire.storetech.evaluation.dto.CartSaveResponse;
-import com.cantire.storetech.evaluation.service.CartServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,8 +20,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CartController {
 
-    private final CartServiceImpl cartService;
-
     /**
      * Adds a product to a cart (creates new cart if needed).
      *
@@ -32,7 +29,8 @@ public class CartController {
     @PostMapping
     public ResponseEntity<CartSaveResponse> addProductToCart(@RequestBody CartSaveRequest request) {
         try {
-            CartSaveResponse response = cartService.addProductToCart(request);
+            // TODO: Call a service to add product to cart and return appropriate response
+            CartSaveResponse response = null;
             return ResponseEntity.status(response.getSuccess() ? HttpStatus.OK : HttpStatus.BAD_REQUEST)
                     .body(response);
         } catch (Exception e) {

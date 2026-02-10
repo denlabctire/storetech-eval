@@ -1,7 +1,10 @@
 package com.cantire.storetech.evaluation.model;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -35,6 +38,23 @@ public class Product {
     @JoinColumn(name = "category_id")
     private ProductCategory category;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "product")
     private List<PriceInfo> priceInfos = new ArrayList<>();
+
+    /**
+     * Helper method to find current price for a product in a specific currency.
+     *
+     * @param product The product
+     * @param currencyCode The currency code
+     * @return Optional containing the current price, or empty if not found
+     */
+    public static Optional<BigDecimal> findCurrentPrice(Product product, String currencyCode) {
+        ZonedDateTime now = ZonedDateTime.now();
+        return product.getPriceInfos().stream()
+                .filter(price -> price.getCurrencyCode().equals(currencyCode))
+                .filter(price -> price.getEffectiveDate().isBefore(now) || price.getEffectiveDate().isEqual(now))
+                .filter(price -> price.getExpiryDate().isAfter(now) || price.getExpiryDate().isEqual(now))
+                .map(PriceInfo::getPrice)
+                .findFirst();
+    }
 }

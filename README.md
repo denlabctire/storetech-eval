@@ -62,11 +62,6 @@ mvn spring-boot:run
 
 The application will start on `http://localhost:8080`
 
-**Run the tests:**
-```bash
-mvn test
-```
-
 ### Step 5: Make Your Changes
 
 1. Work on the coding challenge as instructed [SCREENING_INSTRUCTIONS.md](SCREENING_INSTRUCTIONS.md)
@@ -84,7 +79,19 @@ git commit -m "Implement solution for technical challenge"
 git push origin main
 ```
 
-If this is your first push, you may be prompted to authenticate. Use your GitHub username and password (or Personal Access Token if you have 2FA enabled).
+If this is your first push, you wil be prompted to authenticate. 
+The easiest way to authenticate is to use a Personal Access Token (PAT):
+1. Go to [GitHub Settings](https://github.com/settings/profile)
+2. Click on **Developer settings** in the left sidebar (at the bottom).
+3. Click on **Personal access tokens** in the left sidebar.
+4. Click on **Generate new classic token**.
+5. Give your token a name (e.g., "Store Tech Interview Token").
+6. Select the scopes you need (for pushing code, you typically need `repo` scope).
+7. Click **Generate token** at the bottom of the page.
+8. Save the generated token somewhere secure (you won't be able to see it again).
+9. Use this token when you authenticate in the terminal. Your username is your GitHub username, and the password is the Personal Access Token you just generated.
+
+
 
 ### Step 7: Create a Pull Request
 
@@ -97,31 +104,64 @@ If this is your first push, you may be prompted to authenticate. Use your GitHub
 ## Project Structure
 
 ```
-src/
-├── main/
-│   ├── java/
-│   │   └── com/cantire/storetech/evaluation/
-│   │       ├── Application.java
-│   │       ├── controller/
-│   │       │   └── ProductController.java
-│   │       ├── model/
-│   │       │   ├── Product.java
-│   │       │   └── ProductCategory.java
-│   │       ├── repo/
-│   │       │   └── ProductRepository.java
-│   │       └── service/
-│   │           ├── ProductService.java
-│   │           └── ProductServiceImpl.java
-│   └── resources/
-│       ├── application.yml
-│       └── db.changelog/
-│           ├── db.changelog-master.xml
-│           └── changelog-1.0-initial-schema.xml
-└── test/
-    └── java/
-        └── com/cantire/storetech/evaluation/
-            └── service/
-                └── ProductServiceTest.java
+storetech-eval/
+├── pom.xml
+├── mvnw
+├── mvnw.cmd
+├── .gitignore
+├── README.md
+├── IMPLEMENTATION.md
+├── SCREENING_INSTRUCTIONS.md
+├── build_config/
+│   ├── checkstyle.xml
+│   └── suppressions.xml
+└── src/
+    ├── main/
+    │   ├── java/
+    │   │   └── com/cantire/storetech/evaluation/
+    │   │       ├── Application.java
+    │   │       ├── controller/
+    │   │       │   ├── CartController.java
+    │   │       │   └── ProductController.java
+    │   │       ├── dto/
+    │   │       │   ├── CartSaveRequest.java
+    │   │       │   ├── CartSaveResponse.java
+    │   │       │   └── ProductResponse.java
+    │   │       ├── model/
+    │   │       │   ├── Cart.java
+    │   │       │   ├── PriceInfo.java
+    │   │       │   ├── Product.java
+    │   │       │   ├── ProductCategory.java
+    │   │       │   └── TaxInfo.java
+    │   │       ├── repo/
+    │   │       │   ├── CartRepository.java
+    │   │       │   ├── PriceInfoRepository.java
+    │   │       │   ├── ProductRepository.java
+    │   │       │   └── TaxInfoRepository.java
+    │   │       └── service/
+    │   │           ├── CartService.java
+    │   │           ├── CartServiceImpl.java
+    │   │           ├── ProductService.java
+    │   │           ├── ProductServiceImpl.java
+    │   │           ├── TaxService.java
+    │   │           └── TaxServiceImpl.java
+
+    │   └── resources/
+    │       ├── application.yml
+    │       └── db.changelog/
+    │           ├── db.changelog-master.xml
+    │           ├── changelog-1.0-initial-schema.xml
+    │           └── changelog-2.0-sample-data.xml
+    └── test/
+        ├── java/
+        │   └── com/cantire/storetech/evaluation/
+        │       ├── ApplicationTests.java
+        │       └── service/
+        │           ├── CartServiceTest.java
+        │           ├── ProductServiceTest.java
+        │           └── TaxServiceTest.java        
+        └── resources/
+            └── application.yml
 ```
 
 ## Technologies Used

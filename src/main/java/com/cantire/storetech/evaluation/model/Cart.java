@@ -1,12 +1,5 @@
 package com.cantire.storetech.evaluation.model;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -24,6 +17,14 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Cart aggregate root representing a shopping cart with products, pricing, and tax information.
@@ -70,6 +71,23 @@ public class Cart {
     public void removeProduct(Long productId) {
         products.removeIf(p -> p.getId().equals(productId));
         productQuantities.remove(productId);
+    }
+
+    /**
+     * Helper method to calculate subtotal from products in cart.
+     *
+     * @param cart The cart
+     * @return Calculated subtotal
+     */
+    protected BigDecimal calculateSubtotal(Cart cart) {
+        return cart.getProducts().stream()
+                .map(product -> {
+                    int quantity = cart.getProductQuantity(product.getId());
+                    Optional<BigDecimal> price = Product.findCurrentPrice(product, cart.getCurrencyCode());
+                    return price.map(p -> p.multiply(new BigDecimal(quantity)))
+                            .orElse(BigDecimal.ZERO);
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public int getProductQuantity(Long productId) {

@@ -1,9 +1,6 @@
 package com.cantire.storetech.evaluation.service;
 
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -18,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.cantire.storetech.evaluation.dto.CartSaveRequest;
 import com.cantire.storetech.evaluation.dto.CartSaveResponse;
-import com.cantire.storetech.evaluation.model.PriceInfo;
 import com.cantire.storetech.evaluation.model.Product;
 import com.cantire.storetech.evaluation.model.ProductCategory;
 import com.cantire.storetech.evaluation.model.TaxInfo;
@@ -36,7 +32,7 @@ import com.cantire.storetech.evaluation.repo.TaxInfoRepository;
 class CartServiceTest {
 
     @Autowired
-    private CartServiceImpl cartService;
+    private CartService cartService;
 
     @Autowired
     private CartRepository cartRepository;
@@ -53,44 +49,20 @@ class CartServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Clear existing data
-        cartRepository.deleteAll();
-        productRepository.deleteAll();
-        taxInfoRepository.deleteAll();
 
         // Create a product category
         category = new ProductCategory();
         category.setId(1L);
         category.setName("Tools");
 
-        // Create a valid product
-        validProduct = new Product();
-        validProduct.setId(1L);
-        validProduct.setName("Hammer");
-        validProduct.setSku("HAMMER-001");
-        validProduct.setQuantity(100);
-        validProduct.setCategory(category);
-
-        // Add price info for CAD currency
-        PriceInfo priceInfo = new PriceInfo();
-        priceInfo.setCurrencyCode("CAD");
-        priceInfo.setPrice(new BigDecimal("29.99"));
-        priceInfo.setEffectiveDate(ZonedDateTime.parse("2026-01-01T00:00:00Z"));
-        priceInfo.setExpiryDate(ZonedDateTime.parse("2099-12-31T23:59:59Z"));
-
-        List<PriceInfo> priceInfos = new ArrayList<>();
-        priceInfos.add(priceInfo);
-        validProduct.setPriceInfos(priceInfos);
-        priceInfo.setProduct(validProduct);
-
-        productRepository.save(validProduct);
+        validProduct = productRepository.findAll().get(0);
         validProductId = validProduct.getId();
 
         // Create tax info for Ontario
         TaxInfo hstInfo = new TaxInfo();
         hstInfo.setLocale("en-CA");
         hstInfo.setStateProvince("ON");
-        hstInfo.setPercentage(13.0);
+        hstInfo.setPercentage(8.0);
         hstInfo.setTaxType(TaxInfo.TaxType.HST);
         hstInfo.setName("Harmonized Sales Tax");
 
