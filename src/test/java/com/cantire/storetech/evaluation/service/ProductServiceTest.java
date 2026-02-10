@@ -1,9 +1,10 @@
 package com.cantire.storetech.evaluation.service;
 
-import com.cantire.storetech.evaluation.model.HiearchyLevel;
-import com.cantire.storetech.evaluation.model.Product;
-import com.cantire.storetech.evaluation.model.ProductCategory;
-import com.cantire.storetech.evaluation.repo.ProductRepository;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +16,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.cantire.storetech.evaluation.model.Product;
+import com.cantire.storetech.evaluation.model.ProductCategory;
+import com.cantire.storetech.evaluation.repo.ProductRepository;
 
 @SpringBootTest
 @Testcontainers
@@ -57,7 +56,6 @@ class ProductServiceTest {
         ProductCategory category = new ProductCategory();
         category.setId(1L);
         category.setName("Electronics");
-        category.setHierarchyLevel(HiearchyLevel.LEVEL_1);
 
         Product product = new Product();
         product.setId(1L);
@@ -73,7 +71,6 @@ class ProductServiceTest {
         assertEquals(10, createdProduct.getQuantity());
         assertNotNull(createdProduct.getCategory());
         assertEquals("Electronics", createdProduct.getCategory().getName());
-        assertEquals(HiearchyLevel.LEVEL_1, createdProduct.getCategory().getHierarchyLevel());
     }
 
     @Test
@@ -82,7 +79,6 @@ class ProductServiceTest {
         ProductCategory category1 = new ProductCategory();
         category1.setId(1L);
         category1.setName("Electronics");
-        category1.setHierarchyLevel(HiearchyLevel.LEVEL_1);
 
         Product product1 = new Product();
         product1.setId(1L);
@@ -92,7 +88,6 @@ class ProductServiceTest {
         ProductCategory category2 = new ProductCategory();
         category2.setId(2L);
         category2.setName("Home & Garden");
-        category2.setHierarchyLevel(HiearchyLevel.LEVEL_2);
 
         Product product2 = new Product();
         product2.setId(2L);

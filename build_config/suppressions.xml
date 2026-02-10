@@ -4,6 +4,7 @@
 
 <suppressions>
     <suppress checks="MethodName" files=".*[\\/]src[\\/](test|it)[\\/]"/>
+    <suppress checks="RegexpSingleline" files=".*[\\/]src[\\/](main|test|it)[\\/]"/>
     <suppress checks="LineLength" files=".*[\\/]src[\\/](test|it)[\\/]"/>
     <suppress checks="MethodLength" files=".*[\\/]src[\\/](test|it)[\\/]"/>
 </suppressions>

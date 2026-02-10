@@ -11,7 +11,6 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(255)"/>
-            <column name="hierarchy_level" type="VARCHAR(50)"/>
         </createTable>
     </changeSet>
 
@@ -20,11 +19,124 @@
             <column name="id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="sku" type="VARCHAR(100)"/>
             <column name="quantity" type="INT"/>
             <column name="category_id" type="BIGINT">
                 <constraints foreignKeyName="fk_product_category"
                            references="product_category(id)"/>
             </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="system">
+        <createTable tableName="price_info">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_price_info_product"
+                           references="product(id)"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL(19,4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="effective_date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiry_date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex indexName="idx_price_info_product" tableName="price_info">
+            <column name="product_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="4" author="system">
+        <createTable tableName="tax_info">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="locale" type="VARCHAR(10)"/>
+            <column name="state_province" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="percentage" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tax_type" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex indexName="idx_tax_info_state_province" tableName="tax_info">
+            <column name="state_province"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="5" author="system">
+        <createTable tableName="cart">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="region" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_code" type="VARCHAR(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subtotal" type="DECIMAL(19,4)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="system">
+        <createTable tableName="cart_product">
+            <column name="cart_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_cart_product_cart" references="cart(id)"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_cart_product_product" references="product(id)"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="cart_product" columnNames="cart_id, product_id"/>
+    </changeSet>
+
+    <changeSet id="7" author="system">
+        <createTable tableName="cart_product_quantities">
+            <column name="cart_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_cart_quantities_cart" references="cart(id)"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="cart_product_quantities" columnNames="cart_id, product_id"/>
+    </changeSet>
+
+    <changeSet id="8" author="system">
+        <createTable tableName="cart_applicable_taxes">
+            <column name="cart_id" type="BIGINT">
+                <constraints foreignKeyName="fk_cart_taxes_cart" references="cart(id)"/>
+            </column>
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="locale" type="VARCHAR(10)"/>
+            <column name="state_province" type="VARCHAR(100)"/>
+            <column name="percentage" type="DOUBLE"/>
+            <column name="tax_type" type="VARCHAR(10)"/>
+            <column name="name" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
 

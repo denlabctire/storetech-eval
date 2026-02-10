@@ -106,8 +106,7 @@ src/
 │   │       │   └── ProductController.java
 │   │       ├── model/
 │   │       │   ├── Product.java
-│   │       │   ├── ProductCategory.java
-│   │       │   └── HiearchyLevel.java
+│   │       │   └── ProductCategory.java
 │   │       ├── repo/
 │   │       │   └── ProductRepository.java
 │   │       └── service/
