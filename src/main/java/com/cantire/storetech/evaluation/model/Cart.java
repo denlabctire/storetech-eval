@@ -1,6 +1,6 @@
 package com.cantire.storetech.evaluation.model;
 
-import jakarta.persistence.CascadeType;
+import com.cantire.storetech.evaluation.dto.CartSaveRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -12,15 +12,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.MapKeyColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,18 +43,21 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter(AccessLevel.NONE)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "cart_product",
             joinColumns = @JoinColumn(name = "cart_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private Set<Product> products = new HashSet<>();
 
+    private Set<Product> products = new LinkedHashSet<>();
+
+    @Setter(AccessLevel.NONE)
     @ElementCollection
     @MapKeyColumn(name = "product_id")
     @Column(name = "quantity")
-    private Map<Long, Integer> productQuantities = new HashMap<>();
+    private Map<Long, Integer> productQuantities = new LinkedHashMap<>();
 
     private String region;
 
@@ -59,13 +65,25 @@ public class Cart {
 
     private BigDecimal subtotal = BigDecimal.ZERO;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "cart_id")
-    private List<TaxInfo> applicableTaxes;
+    @Transient
+    private List<TaxInfo> applicableTaxes = new LinkedList<>();
+
+    /**
+     * Factory method to create a new Cart instance.
+     */
+    public static Cart create(CartSaveRequest cartSaveRequest, List<TaxInfo> taxesForRegion) {
+        Cart cart = new Cart();
+        cart.setRegion(cartSaveRequest.getRegion());
+        cart.setCurrencyCode(cartSaveRequest.getCurrencyCode());
+        cart.setSubtotal(cart.calculateSubtotal());
+        cart.setApplicableTaxes(taxesForRegion);
+        return cart;
+    }
 
     public void addProduct(Product product, int quantity) {
         products.add(product);
         productQuantities.put(product.getId(), quantity);
+        this.setSubtotal(calculateSubtotal());
     }
 
     public void removeProduct(Long productId) {
@@ -76,14 +94,13 @@ public class Cart {
     /**
      * Helper method to calculate subtotal from products in cart.
      *
-     * @param cart The cart
      * @return Calculated subtotal
      */
-    protected BigDecimal calculateSubtotal(Cart cart) {
-        return cart.getProducts().stream()
+    public BigDecimal calculateSubtotal() {
+        return this.getProducts().stream()
                 .map(product -> {
-                    int quantity = cart.getProductQuantity(product.getId());
-                    Optional<BigDecimal> price = Product.findCurrentPrice(product, cart.getCurrencyCode());
+                    int quantity = this.getProductQuantity(product.getId());
+                    Optional<BigDecimal> price = Product.findCurrentPrice(product, this.getCurrencyCode());
                     return price.map(p -> p.multiply(new BigDecimal(quantity)))
                             .orElse(BigDecimal.ZERO);
                 })
@@ -92,5 +109,11 @@ public class Cart {
 
     public int getProductQuantity(Long productId) {
         return productQuantities.getOrDefault(productId, 0);
+    }
+
+    public void emptyCart() {
+        this.getProducts().clear();
+        this.getProductQuantities().clear();
+        this.setSubtotal(BigDecimal.ZERO);
     }
 }

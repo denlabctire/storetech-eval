@@ -21,7 +21,7 @@ public class CartResponseConverter {
     public static CartSaveResponse toResponse(Cart cart, boolean success, String message) {
         CartSaveResponse response = new CartSaveResponse();
         response.setCartId(cart.getId());
-        response.setTotalItems(cart.getProducts().size());
+        response.setTotalItems(cart.getProductQuantities().values().stream().mapToInt(Integer::intValue).sum());
         response.setSubtotal(cart.getSubtotal());
         response.setCurrencyCode(cart.getCurrencyCode());
         response.setRegion(cart.getRegion());

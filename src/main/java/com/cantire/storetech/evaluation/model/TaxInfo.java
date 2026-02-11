@@ -25,7 +25,7 @@ public class TaxInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String locale;
+    private String countryCode;
 
     private String stateProvince;
 

@@ -1,24 +1,24 @@
 package com.cantire.storetech.evaluation.converter;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.cantire.storetech.evaluation.dto.CartSaveResponse;
 import com.cantire.storetech.evaluation.model.Cart;
 import com.cantire.storetech.evaluation.model.PriceInfo;
 import com.cantire.storetech.evaluation.model.Product;
 import com.cantire.storetech.evaluation.model.TaxInfo;
 import com.cantire.storetech.evaluation.model.TaxInfo.TaxType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for CartResponseConverter.
@@ -69,18 +69,13 @@ class CartResponseConverterTest {
         cart.setCurrencyCode("CAD");
         cart.setSubtotal(new BigDecimal("69.97"));
 
-        Set<Product> products = new HashSet<>();
-        products.add(product1);
-        products.add(product2);
-        cart.setProducts(products);
-
-        cart.getProductQuantities().put(1L, 2);
-        cart.getProductQuantities().put(2L, 1);
+        cart.addProduct(product1, 2);
+        cart.addProduct(product2, 1);
 
         // Create tax info
         TaxInfo hst = new TaxInfo();
         hst.setId(1L);
-        hst.setLocale("CA");
+        hst.setCountryCode(Locale.CANADA.getCountry());
         hst.setStateProvince("ON");
         hst.setPercentage(13.0);
         hst.setTaxType(TaxType.HST);
@@ -97,7 +92,7 @@ class CartResponseConverterTest {
         // Then
         assertNotNull(response);
         assertEquals(1L, response.getCartId());
-        assertEquals(2, response.getTotalItems());
+        assertEquals(3, response.getTotalItems());
         assertEquals(new BigDecimal("69.97"), response.getSubtotal());
         assertEquals("CAD", response.getCurrencyCode());
         assertEquals("ON", response.getRegion());
@@ -161,7 +156,7 @@ class CartResponseConverterTest {
         // Given - Add PST and GST for BC
         TaxInfo gst = new TaxInfo();
         gst.setId(2L);
-        gst.setLocale("CA");
+        gst.setCountryCode(Locale.CANADA.getCountry());
         gst.setStateProvince("BC");
         gst.setPercentage(5.0);
         gst.setTaxType(TaxType.GST);
@@ -169,7 +164,7 @@ class CartResponseConverterTest {
 
         TaxInfo pst = new TaxInfo();
         pst.setId(3L);
-        pst.setLocale("CA");
+        pst.setCountryCode(Locale.CANADA.getCountry());
         pst.setStateProvince("BC");
         pst.setPercentage(7.0);
         pst.setTaxType(TaxType.PST);
@@ -218,7 +213,7 @@ class CartResponseConverterTest {
     @Test
     void testToResponse_WithEmptyCart_ReturnsEmptyItems() {
         // Given
-        cart.setProducts(new HashSet<>());
+        cart.emptyCart();
 
         // When
         CartSaveResponse response = CartResponseConverter.toResponse(cart, true, "Empty cart");
@@ -248,20 +243,18 @@ class CartResponseConverterTest {
         usdPrice.setExpiryDate(ZonedDateTime.now().plusDays(30));
         product3.setPriceInfos(new ArrayList<>(List.of(usdPrice)));
 
-        cart.setProducts(new HashSet<>(Set.of(product3)));
-        cart.getProductQuantities().clear();
-        cart.getProductQuantities().put(3L, 1);
+        cart.addProduct(product3, 1);
 
         // When
         CartSaveResponse response = CartResponseConverter.toResponse(cart, true, "Success");
 
         // Then
         assertNotNull(response.getItems());
-        assertEquals(1, response.getItems().size());
+        assertEquals(3, response.getItems().size());
 
-        CartSaveResponse.CartItemResponse item = response.getItems().get(0);
+        CartSaveResponse.CartItemResponse item = response.getItems().get(2);
         assertEquals(3L, item.getProductId());
         // Price should be null since no CAD price exists
-        assertEquals(null, item.getPrice());
+        assertNull(item.getPrice());
     }
 }

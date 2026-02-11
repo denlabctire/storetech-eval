@@ -2,6 +2,7 @@ package com.cantire.storetech.evaluation.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -33,6 +34,11 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll().stream()
                 .map(this::toProductResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Product> getProduct(Long productId) {
+        return productRepository.findById(productId);
     }
 
     private ProductResponse toProductResponse(Product product) {

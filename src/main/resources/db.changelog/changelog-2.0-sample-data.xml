@@ -103,105 +103,105 @@
     <!-- Federal GST (applies to all provinces) -->
     <changeSet id="sample-data-4" author="sample">
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="AB"/>
             <column name="percentage" value="5.0"/>
             <column name="tax_type" value="GST"/>
             <column name="name" value="Goods and Services Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="AB"/>
             <column name="percentage" value="0.0"/>
             <column name="tax_type" value="PST"/>
             <column name="name" value="Provincial Sales Tax (AB - Not Applicable)"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="BC"/>
             <column name="percentage" value="5.0"/>
             <column name="tax_type" value="GST"/>
             <column name="name" value="Goods and Services Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="BC"/>
             <column name="percentage" value="7.0"/>
             <column name="tax_type" value="PST"/>
             <column name="name" value="Provincial Sales Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="MB"/>
             <column name="percentage" value="5.0"/>
             <column name="tax_type" value="GST"/>
             <column name="name" value="Goods and Services Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="MB"/>
             <column name="percentage" value="8.0"/>
             <column name="tax_type" value="PST"/>
             <column name="name" value="Provincial Sales Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="NB"/>
             <column name="percentage" value="14.0"/>
             <column name="tax_type" value="HST"/>
             <column name="name" value="Harmonized Sales Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="NL"/>
             <column name="percentage" value="15.0"/>
             <column name="tax_type" value="HST"/>
             <column name="name" value="Harmonized Sales Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="NS"/>
             <column name="percentage" value="15.0"/>
             <column name="tax_type" value="HST"/>
             <column name="name" value="Harmonized Sales Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="ON"/>
             <column name="percentage" value="13.0"/>
             <column name="tax_type" value="HST"/>
             <column name="name" value="Harmonized Sales Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="PE"/>
             <column name="percentage" value="14.0"/>
             <column name="tax_type" value="HST"/>
             <column name="name" value="Harmonized Sales Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="QC"/>
             <column name="percentage" value="5.0"/>
             <column name="tax_type" value="GST"/>
             <column name="name" value="Goods and Services Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="QC"/>
             <column name="percentage" value="9.975"/>
             <column name="tax_type" value="PST"/>
             <column name="name" value="Quebec Sales Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="SK"/>
             <column name="percentage" value="5.0"/>
             <column name="tax_type" value="GST"/>
             <column name="name" value="Goods and Services Tax"/>
         </insert>
         <insert tableName="tax_info">
-            <column name="locale" value="en-CA"/>
+            <column name="country_code" value="CA"/>
             <column name="state_province" value="SK"/>
             <column name="percentage" value="6.0"/>
             <column name="tax_type" value="PST"/>

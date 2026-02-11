@@ -9,5 +9,5 @@ import com.cantire.storetech.evaluation.model.TaxInfo;
 
 @Repository
 public interface TaxInfoRepository extends JpaRepository<TaxInfo, Long> {
-    List<TaxInfo> findByStateProvince(String stateProvince);
+    List<TaxInfo> findByStateProvinceAndCountryCode(String stateProvince, String countryCode);
 }

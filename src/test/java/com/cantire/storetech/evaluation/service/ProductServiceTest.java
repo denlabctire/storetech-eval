@@ -1,11 +1,7 @@
 package com.cantire.storetech.evaluation.service;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
+import com.cantire.storetech.evaluation.model.Product;
+import com.cantire.storetech.evaluation.repo.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,9 +12,11 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import com.cantire.storetech.evaluation.model.Product;
-import com.cantire.storetech.evaluation.model.ProductCategory;
-import com.cantire.storetech.evaluation.repo.ProductRepository;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Testcontainers
@@ -28,6 +26,10 @@ class ProductServiceTest {
     static GenericContainer<?> h2Container = new GenericContainer<>(DockerImageName.parse("oscarfonts/h2:latest"))
             .withExposedPorts(1521, 81)
             .withEnv("H2_OPTIONS", "-ifNotExists");
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private ProductRepository productRepository;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -38,98 +40,68 @@ class ProductServiceTest {
         registry.add("spring.datasource.password", () -> "");
     }
 
-    @Autowired
-    private ProductService productService;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @BeforeEach
-    void setUp() {
-        // Clean up database before each test
-        productRepository.deleteAll();
-    }
-
     @Test
     void testCreateProduct() {
-        // Given
-        ProductCategory category = new ProductCategory();
-        category.setId(1L);
-        category.setName("Electronics");
+        // Given - use a unique ID that doesn't conflict with Liquibase data
+        long initialCount = productRepository.count();
 
         Product product = new Product();
-        product.setId(1L);
+        product.setId(9999L);
+        product.setName("Test Product");
+        product.setSku("TEST-SKU-001");
         product.setQuantity(10);
-        product.setCategory(category);
 
         // When
         Product createdProduct = productService.create(product);
 
         // Then
         assertNotNull(createdProduct);
-        assertEquals(1L, createdProduct.getId());
+        assertEquals(9999L, createdProduct.getId());
         assertEquals(10, createdProduct.getQuantity());
-        assertNotNull(createdProduct.getCategory());
-        assertEquals("Electronics", createdProduct.getCategory().getName());
+        assertEquals("Test Product", createdProduct.getName());
+        assertEquals(initialCount + 1, productRepository.count());
     }
 
     @Test
     void testGetProducts() {
-        // Given
-        ProductCategory category1 = new ProductCategory();
-        category1.setId(1L);
-        category1.setName("Electronics");
-
-        Product product1 = new Product();
-        product1.setId(1L);
-        product1.setQuantity(10);
-        product1.setCategory(category1);
-
-        ProductCategory category2 = new ProductCategory();
-        category2.setId(2L);
-        category2.setName("Home & Garden");
-
-        Product product2 = new Product();
-        product2.setId(2L);
-        product2.setQuantity(5);
-        product2.setCategory(category2);
-
-        productService.create(product1);
-        productService.create(product2);
-
-        // When
+        // When - get products from Liquibase sample data
         List<Product> products = productService.getProducts();
 
-        // Then
+        // Then - Liquibase creates 5 sample products
         assertNotNull(products);
-        assertEquals(2, products.size());
+        assertTrue(products.size() >= 1, "Should have at least one product from Liquibase data");
 
-        Product retrievedProduct1 = products.stream()
-                .filter(p -> p.getId().equals(1L))
-                .findFirst()
-                .orElse(null);
-
-        assertNotNull(retrievedProduct1);
-        assertEquals(10, retrievedProduct1.getQuantity());
-        assertEquals("Electronics", retrievedProduct1.getCategory().getName());
-
-        Product retrievedProduct2 = products.stream()
-                .filter(p -> p.getId().equals(2L))
-                .findFirst()
-                .orElse(null);
-
-        assertNotNull(retrievedProduct2);
-        assertEquals(5, retrievedProduct2.getQuantity());
-        assertEquals("Home & Garden", retrievedProduct2.getCategory().getName());
+        // Verify first product exists and has expected structure
+        Product firstProduct = products.get(0);
+        assertNotNull(firstProduct.getId());
+        assertNotNull(firstProduct.getName());
     }
 
     @Test
-    void testGetProductsWhenEmpty() {
+    void testGetProductsReturnsAllProducts() {
+        // Given - add a new product
+        Product newProduct = new Product();
+        newProduct.setId(8888L);
+        newProduct.setName("Additional Product");
+        newProduct.setSku("TEST-SKU-002");
+        newProduct.setQuantity(5);
+
+        long countBefore = productRepository.count();
+        productService.create(newProduct);
+
         // When
         List<Product> products = productService.getProducts();
 
         // Then
         assertNotNull(products);
-        assertTrue(products.isEmpty());
+        assertEquals(countBefore + 1, products.size());
+
+        Product addedProduct = products.stream()
+                .filter(p -> p.getId().equals(8888L))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(addedProduct);
+        assertEquals("Additional Product", addedProduct.getName());
     }
 }

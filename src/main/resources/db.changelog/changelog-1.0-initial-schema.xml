@@ -61,7 +61,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="locale" type="VARCHAR(10)"/>
+            <column name="country_code" type="VARCHAR(10)"/>
             <column name="state_province" type="VARCHAR(100)">
                 <constraints nullable="false"/>
             </column>

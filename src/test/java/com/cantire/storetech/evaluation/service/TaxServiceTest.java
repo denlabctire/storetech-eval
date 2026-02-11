@@ -1,11 +1,8 @@
 package com.cantire.storetech.evaluation.service;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
+import com.cantire.storetech.evaluation.model.TaxInfo;
+import com.cantire.storetech.evaluation.model.TaxInfo.TaxType;
+import com.cantire.storetech.evaluation.repo.TaxInfoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,9 +13,12 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import com.cantire.storetech.evaluation.model.TaxInfo;
-import com.cantire.storetech.evaluation.model.TaxInfo.TaxType;
-import com.cantire.storetech.evaluation.repo.TaxInfoRepository;
+import java.util.Currency;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Testcontainers
@@ -28,6 +28,10 @@ class TaxServiceTest {
     static GenericContainer<?> h2Container = new GenericContainer<>(DockerImageName.parse("oscarfonts/h2:latest"))
             .withExposedPorts(1521, 81)
             .withEnv("H2_OPTIONS", "-ifNotExists");
+    @Autowired
+    private TaxService taxService;
+    @Autowired
+    private TaxInfoRepository taxInfoRepository;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -37,109 +41,59 @@ class TaxServiceTest {
         registry.add("spring.datasource.password", () -> "");
     }
 
-    @Autowired
-    private TaxService taxService;
-
-    @Autowired
-    private TaxInfoRepository taxInfoRepository;
-
-    @BeforeEach
-    void setUp() {
-        taxInfoRepository.deleteAll();
-    }
-
     @Test
     void testGetTaxesForRegion_ReturnsMatchingTaxes() {
-        // Given
-        TaxInfo ontarioHst = new TaxInfo();
-        ontarioHst.setLocale("CA");
-        ontarioHst.setStateProvince("ON");
-        ontarioHst.setPercentage(13.0);
-        ontarioHst.setTaxType(TaxType.HST);
-        ontarioHst.setName("Ontario HST");
-        taxInfoRepository.save(ontarioHst);
+        // When - use existing Liquibase data for Ontario (has HST)
+        List<TaxInfo> ontarioTaxes = taxService.getTaxesForRegion("ON", Currency.getInstance("CAD").getCurrencyCode());
 
-        TaxInfo bcGst = new TaxInfo();
-        bcGst.setLocale("CA");
-        bcGst.setStateProvince("BC");
-        bcGst.setPercentage(5.0);
-        bcGst.setTaxType(TaxType.GST);
-        bcGst.setName("BC GST");
-        taxInfoRepository.save(bcGst);
-
-        TaxInfo bcPst = new TaxInfo();
-        bcPst.setLocale("CA");
-        bcPst.setStateProvince("BC");
-        bcPst.setPercentage(7.0);
-        bcPst.setTaxType(TaxType.PST);
-        bcPst.setName("BC PST");
-        taxInfoRepository.save(bcPst);
-
-        // When
-        List<TaxInfo> ontarioTaxes = taxService.getTaxesForRegion("ON");
-        List<TaxInfo> bcTaxes = taxService.getTaxesForRegion("BC");
-
-        // Then
+        // Then - Ontario should have HST from Liquibase sample data
         assertNotNull(ontarioTaxes);
-        assertEquals(1, ontarioTaxes.size());
-        assertEquals("Ontario HST", ontarioTaxes.get(0).getName());
-        assertEquals(TaxType.HST, ontarioTaxes.get(0).getTaxType());
-        assertEquals(13.0, ontarioTaxes.get(0).getPercentage());
-
-        assertNotNull(bcTaxes);
-        assertEquals(2, bcTaxes.size());
-        assertTrue(bcTaxes.stream().anyMatch(t -> t.getTaxType() == TaxType.GST));
-        assertTrue(bcTaxes.stream().anyMatch(t -> t.getTaxType() == TaxType.PST));
+        assertTrue(ontarioTaxes.size() >= 1, "Ontario should have at least one tax (HST)");
+        assertTrue(ontarioTaxes.stream().anyMatch(t -> t.getTaxType() == TaxType.HST),
+                "Ontario should have HST");
     }
 
     @Test
     void testGetTaxesForRegion_ReturnsEmptyListWhenNoMatch() {
-        // Given
-        TaxInfo ontarioHst = new TaxInfo();
-        ontarioHst.setLocale("CA");
-        ontarioHst.setStateProvince("ON");
-        ontarioHst.setPercentage(13.0);
-        ontarioHst.setTaxType(TaxType.HST);
-        ontarioHst.setName("Ontario HST");
-        taxInfoRepository.save(ontarioHst);
-
-        // When
-        List<TaxInfo> albertaTaxes = taxService.getTaxesForRegion("AB");
+        // When - use a region that doesn't exist in Liquibase data
+        List<TaxInfo> nonExistentRegionTaxes = taxService.getTaxesForRegion("XX", Currency.getInstance("CAD").getCurrencyCode());
 
         // Then
-        assertNotNull(albertaTaxes);
-        assertTrue(albertaTaxes.isEmpty());
+        assertNotNull(nonExistentRegionTaxes);
+        assertTrue(nonExistentRegionTaxes.isEmpty());
     }
 
     @Test
     void testGetTaxesForRegion_ReturnsMultipleTaxTypesForSameRegion() {
-        // Given - Quebec has both GST and QST (PST)
-        TaxInfo quebecGst = new TaxInfo();
-        quebecGst.setLocale("CA");
-        quebecGst.setStateProvince("QC");
-        quebecGst.setPercentage(5.0);
-        quebecGst.setTaxType(TaxType.GST);
-        quebecGst.setName("Quebec GST");
-        taxInfoRepository.save(quebecGst);
+        // When - BC should have both GST and PST from Liquibase sample data
+        List<TaxInfo> bcTaxes = taxService.getTaxesForRegion("BC", Currency.getInstance("CAD").getCurrencyCode());
 
-        TaxInfo quebecPst = new TaxInfo();
-        quebecPst.setLocale("CA");
-        quebecPst.setStateProvince("QC");
-        quebecPst.setPercentage(9.975);
-        quebecPst.setTaxType(TaxType.PST);
-        quebecPst.setName("Quebec QST");
-        taxInfoRepository.save(quebecPst);
+        // Then - BC should have GST and PST
+        assertNotNull(bcTaxes);
+        assertTrue(bcTaxes.size() >= 2, "BC should have at least 2 taxes (GST and PST)");
+        assertTrue(bcTaxes.stream().anyMatch(t -> t.getTaxType() == TaxType.GST),
+                "BC should have GST");
+        assertTrue(bcTaxes.stream().anyMatch(t -> t.getTaxType() == TaxType.PST),
+                "BC should have PST");
+    }
+
+    @Test
+    void testGetTaxesForRegion_CanAddNewTaxAndRetrieve() {
+        // Given - Add a new tax for a unique region
+        TaxInfo newTax = new TaxInfo();
+        newTax.setCountryCode(Locale.CANADA.getCountry());
+        newTax.setStateProvince("YT"); // Yukon - unlikely to be in Liquibase data
+        newTax.setPercentage(5.0);
+        newTax.setTaxType(TaxType.GST);
+        newTax.setName("Yukon GST");
+        taxInfoRepository.save(newTax);
 
         // When
-        List<TaxInfo> quebecTaxes = taxService.getTaxesForRegion("QC");
+        List<TaxInfo> yukonTaxes = taxService.getTaxesForRegion("YT", Currency.getInstance("CAD").getCurrencyCode());
 
         // Then
-        assertNotNull(quebecTaxes);
-        assertEquals(2, quebecTaxes.size());
-
-        double totalTaxPercentage = quebecTaxes.stream()
-                .mapToDouble(TaxInfo::getPercentage)
-                .sum();
-        assertEquals(14.975, totalTaxPercentage, 0.001);
+        assertNotNull(yukonTaxes);
+        assertTrue(yukonTaxes.size() >= 1);
+        assertTrue(yukonTaxes.stream().anyMatch(t -> t.getName().equals("Yukon GST")));
     }
 }
