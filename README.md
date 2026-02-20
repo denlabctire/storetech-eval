@@ -1,7 +1,7 @@
-# Canadian Tire Store Tech - Technical Interview
+# CTC Store Tech - Technical Interview
 
 ## Overview
-This is a technical evaluation project for Canadian Tire Store Tech candidates. The project is a Spring Boot application with JPA, Liquibase, and H2 database.
+This is a technical evaluation project for CTC Store Tech candidates. The project is a Spring Boot application with JPA, Liquibase, and H2 database.
 
 ## Technical Interview Setup Instructions
 

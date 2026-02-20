@@ -10,7 +10,7 @@ You have a pre-configured Spring Boot application with:
 - ✅ **TaxInfo** - Represents Canadian provincial and federal taxes
 - ✅ **Cart Entity** - Shopping cart aggregate root (partially implemented)
 - ✅ **Database Schema** - Complete Liquibase migration scripts
-- ✅ **Sample Data** - Canadian Tire products and Canadian tax information
+- ✅ **Sample Data** - CTC products and Canadian tax information
 - ✅ **DTOs** - CartSaveRequest and CartSaveResponse prepared
 - ✅ **Test Suite** - SpringBootTest class with test cases ready for implementation
 
@@ -107,7 +107,7 @@ src/
 
 ### Sample Data Included
 
-**Products (5 Canadian Tire items):**
+**Products (5 CTC items):**
 - 16oz Claw Hammer (CAD $24.99)
 - Cordless Drill/Driver Kit (CAD $129.99)
 - Premium Synthetic Motor Oil 5L (CAD $34.99)
