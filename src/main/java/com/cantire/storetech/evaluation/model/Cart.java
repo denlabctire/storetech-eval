@@ -26,6 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -99,7 +100,7 @@ public class Cart {
     public BigDecimal calculateSubtotal() {
         return this.getProducts().stream()
                 .map(product -> {
-                    int quantity = this.getProductQuantity(product.getId());
+                    int quantity = this.getProductQuantityOrZero(product.getId());
                     Optional<BigDecimal> price = Product.findCurrentPrice(product, this.getCurrencyCode());
                     return price.map(p -> p.multiply(new BigDecimal(quantity)))
                             .orElse(BigDecimal.ZERO);
@@ -107,8 +108,8 @@ public class Cart {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public int getProductQuantity(Long productId) {
-        return productQuantities.getOrDefault(productId, 0);
+    public int getProductQuantityOrZero(Long productId) {
+        return Objects.requireNonNullElse(1, productQuantities.getOrDefault(productId, 0));
     }
 
     public void emptyCart() {

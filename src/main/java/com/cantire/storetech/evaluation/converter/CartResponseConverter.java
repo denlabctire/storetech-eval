@@ -35,7 +35,7 @@ public class CartResponseConverter {
             item.setProductId(product.getId());
             item.setProductName(product.getName());
             item.setSku(product.getSku());
-            item.setQuantity(cart.getProductQuantity(product.getId()));
+            item.setQuantity(cart.getProductQuantityOrZero(product.getId()));
 
             Optional<BigDecimal> price = Product.findCurrentPrice(product, cart.getCurrencyCode());
             price.ifPresent(item::setPrice);
