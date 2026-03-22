@@ -9,5 +9,6 @@
     <include file="db.changelog/changelog-2.0-sample-data.xml"/>
     <include file="db.changelog/changelog-3.0-reservation-schema.xml"/>
     <include file="db.changelog/changelog-4.0-reservation-sample-data.xml"/>
+    <include file="db.changelog/changelog-5.0-cart-created-at.xml"/>
 
 </databaseChangeLog>

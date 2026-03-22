@@ -1,14 +1,14 @@
 package com.cantire.storetech.evaluation.converter;
 
-import com.cantire.storetech.evaluation.dto.CartSaveResponse;
-import com.cantire.storetech.evaluation.model.Cart;
-import com.cantire.storetech.evaluation.model.Product;
-import com.cantire.storetech.evaluation.model.TaxInfo;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.cantire.storetech.evaluation.dto.CartSaveResponse;
+import com.cantire.storetech.evaluation.model.Cart;
+import com.cantire.storetech.evaluation.model.Product;
+import com.cantire.storetech.evaluation.model.TaxInfo;
 
 public class CartResponseConverter {
 
@@ -23,6 +23,8 @@ public class CartResponseConverter {
         response.setCartId(cart.getId());
         response.setTotalItems(cart.getProductQuantities().values().stream().mapToInt(Integer::intValue).sum());
         response.setSubtotal(cart.getSubtotal());
+        response.setCartType(cart.getCartType());
+        response.setCreatedAt(cart.getCreatedAt());
         response.setCurrencyCode(cart.getCurrencyCode());
         response.setRegion(cart.getRegion());
         response.setSuccess(success);

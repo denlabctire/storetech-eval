@@ -13,4 +13,9 @@ public interface CartService {
      */
     CartSaveResponse addProductToCart(CartSaveRequest request);
 
+    static void purgeStaleCarts() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'purgeStaleCarts'");
+    }
+
 }

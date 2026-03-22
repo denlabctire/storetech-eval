@@ -1,5 +1,29 @@
 package com.cantire.storetech.evaluation.service;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.hibernate.ObjectNotFoundException;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import com.cantire.storetech.evaluation.dto.CartSaveRequest;
 import com.cantire.storetech.evaluation.dto.CartSaveResponse;
 import com.cantire.storetech.evaluation.exception.InvalidCurrencyCodeException;
@@ -9,30 +33,6 @@ import com.cantire.storetech.evaluation.model.Product;
 import com.cantire.storetech.evaluation.model.TaxInfo;
 import com.cantire.storetech.evaluation.model.TaxInfo.TaxType;
 import com.cantire.storetech.evaluation.repo.CartRepository;
-import org.hibernate.ObjectNotFoundException;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for CartService using Mockito for stubbing and verification.
@@ -89,10 +89,26 @@ class CartServiceMockitoTest {
         assertNotNull(response.getCartId(), "Cart ID should be assigned");
         assertEquals(2, response.getTotalItems(), "Cart should have 2 items");
         assertEquals(new BigDecimal("59.98"), response.getSubtotal(), "Subtotal should be 29.99 * 2");
+        assertNotNull(response.getCreatedAt(), "Cart createdAt should be populated");
         assertEquals("CAD", response.getCurrencyCode());
         assertEquals("ON", response.getRegion());
         assertNotNull(response.getItems());
         assertEquals(1, response.getItems().size());
+        assertNotNull(response.getTaxBreakdown());
+        assertEquals(1, response.getTaxBreakdown().size());
+
+        CartSaveResponse.CartItemResponse item = response.getItems().get(0);
+        assertEquals(1L, item.getProductId());
+        assertEquals("Test Product 1", item.getProductName());
+        assertEquals("SKU-001", item.getSku());
+        assertEquals(1, item.getQuantity());
+        assertEquals(new BigDecimal("29.99"), item.getPrice());
+        assertEquals("CAD", item.getCurrencyCode());
+
+        CartSaveResponse.TaxBreakdownResponse tax = response.getTaxBreakdown().get(0);
+        assertEquals("HST", tax.getTaxType());
+        assertEquals(13.0, tax.getPercentage());
+        assertEquals("Ontario HST", tax.getName());
 
         verify(productService).getProduct(1L);
         verify(taxService).getTaxesForRegion("ON", "CAD");
@@ -128,6 +144,13 @@ class CartServiceMockitoTest {
         assertEquals(100L, response.getCartId(), "Cart ID should remain the same");
         assertEquals(4, response.getTotalItems(), "Should have 4 total items (1 + 3)");
         assertEquals(expectedSubtotal, response.getSubtotal(), "Subtotal should reflect total quantity");
+        assertEquals(existingCart.getCreatedAt(), response.getCreatedAt(), "Existing cart should preserve createdAt");
+        assertEquals("CAD", response.getCurrencyCode());
+        assertEquals("ON", response.getRegion());
+        assertNotNull(response.getItems());
+        assertEquals(2, response.getItems().size());
+        assertNotNull(response.getTaxBreakdown());
+        assertEquals(1, response.getTaxBreakdown().size());
 
         verify(cartRepository).findById(100L);
         verify(productService).getProduct(2L);
@@ -229,6 +252,7 @@ class CartServiceMockitoTest {
         cart.setId(cartId);
         cart.setRegion(region);
         cart.setCurrencyCode(currencyCode);
+        cart.setCreatedAt(ZonedDateTime.now().minusHours(1));
         cart.addProduct(product, quantity);
         return cart;
     }

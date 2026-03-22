@@ -1,9 +1,23 @@
 package com.cantire.storetech.evaluation.model;
 
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
 import com.cantire.storetech.evaluation.dto.CartSaveRequest;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,16 +33,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * Cart aggregate root representing a shopping cart with products, pricing, and tax information.
@@ -66,6 +70,12 @@ public class Cart {
 
     private BigDecimal subtotal = BigDecimal.ZERO;
 
+    @Enumerated(EnumType.STRING)
+    private CartType cartType;
+
+    @Column(nullable = false, updatable = false)
+    private ZonedDateTime createdAt;
+
     @Transient
     private List<TaxInfo> applicableTaxes = new LinkedList<>();
 
@@ -77,6 +87,7 @@ public class Cart {
         cart.setRegion(cartSaveRequest.getRegion());
         cart.setCurrencyCode(cartSaveRequest.getCurrencyCode());
         cart.setSubtotal(cart.calculateSubtotal());
+        cart.setCreatedAt(ZonedDateTime.now());
         cart.setApplicableTaxes(taxesForRegion);
         return cart;
     }
