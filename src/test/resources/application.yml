@@ -2,7 +2,7 @@ spring:
   application.name: storetech.evaluation
 
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testdb;LOCK_TIMEOUT=10000;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -13,7 +13,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
 
   liquibase:
     change-log: classpath:db.changelog/db.changelog-master.xml

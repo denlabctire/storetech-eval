@@ -27,3 +27,5 @@ replay_pid*
 # HVE-Core AI workflow artifacts (local only)
 .copilot-tracking/
 /.vscode/
+.DS_Store
+.github/

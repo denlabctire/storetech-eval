@@ -5,9 +5,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <include file="db.changelog/changelog-1.0-initial-schema.xml"/>
-    <include file="db.changelog/changelog-2.0-sample-data.xml"/>
-    <include file="db.changelog/changelog-3.0-reservation-schema.xml"/>
-    <include file="db.changelog/changelog-4.0-reservation-sample-data.xml"/>
+    <changeSet id="reservation-sample-data-1" author="sample">
+        <insert tableName="inventory">
+            <column name="sku" value="ABC"/>
+            <column name="available_quantity" value="10"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>

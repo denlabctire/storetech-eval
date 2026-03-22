@@ -101,7 +101,7 @@ The easiest way to authenticate is to use a Personal Access Token (PAT):
 4. Add a title and description explaining your changes
 5. Click **Create pull request**
 
-## Project Structure
+## Abbreviated Project Structure
 
 ```
 storetech-eval/
@@ -110,11 +110,6 @@ storetech-eval/
 ├── mvnw.cmd
 ├── .gitignore
 ├── README.md
-├── IMPLEMENTATION.md
-├── SCREENING_INSTRUCTIONS.md
-├── build_config/
-│   ├── checkstyle.xml
-│   └── suppressions.xml
 └── src/
     ├── main/
     │   ├── java/
@@ -125,27 +120,16 @@ storetech-eval/
     │   │       │   └── ProductController.java
     │   │       ├── dto/
     │   │       │   ├── CartSaveRequest.java
-    │   │       │   ├── CartSaveResponse.java
     │   │       │   └── ProductResponse.java
     │   │       ├── model/
     │   │       │   ├── Cart.java
-    │   │       │   ├── PriceInfo.java
-    │   │       │   ├── Product.java
-    │   │       │   ├── ProductCategory.java
     │   │       │   └── TaxInfo.java
     │   │       ├── repo/
     │   │       │   ├── CartRepository.java
-    │   │       │   ├── PriceInfoRepository.java
-    │   │       │   ├── ProductRepository.java
     │   │       │   └── TaxInfoRepository.java
     │   │       └── service/
     │   │           ├── CartService.java
-    │   │           ├── CartServiceImpl.java
-    │   │           ├── ProductService.java
-    │   │           ├── ProductServiceImpl.java
-    │   │           ├── TaxService.java
-    │   │           └── TaxServiceImpl.java
-
+    │   │           └── CartServiceImpl.java
     │   └── resources/
     │       ├── application.yml
     │       └── db.changelog/
@@ -153,15 +137,10 @@ storetech-eval/
     │           ├── changelog-1.0-initial-schema.xml
     │           └── changelog-2.0-sample-data.xml
     └── test/
-        ├── java/
-        │   └── com/cantire/storetech/evaluation/
-        │       ├── ApplicationTests.java
-        │       └── service/
-        │           ├── CartServiceTest.java
-        │           ├── ProductServiceTest.java
-        │           └── TaxServiceTest.java        
+        ├──   
         └── resources/
             └── application.yml
+        └── java/
 ```
 
 ## Technologies Used

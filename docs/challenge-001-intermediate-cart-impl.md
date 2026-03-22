@@ -54,7 +54,7 @@ You have a pre-configured Spring Boot application with:
 - Invalid region codes
 - Null or zero quantities
 
-## Project Structure
+## Abbreviated Project Structure
 
 ```
 src/
