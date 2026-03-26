@@ -17,3 +17,8 @@ spring:
 
   liquibase:
     change-log: classpath:db.changelog/db.changelog-master.xml
+jobs:
+  purge:
+    cutoff-default: 24 # hours
+    cutoff-reward-eligible: 336 #14 days
+    cron: "0 */5 * * * *" # Every 5 minutes

@@ -76,6 +76,9 @@ public class Cart {
     @Column(nullable = false, updatable = false)
     private ZonedDateTime createdAt;
 
+     @Column(nullable = false, updatable = false)
+    private ZonedDateTime updatedAt;
+
     @Transient
     private List<TaxInfo> applicableTaxes = new LinkedList<>();
 
@@ -88,6 +91,7 @@ public class Cart {
         cart.setCurrencyCode(cartSaveRequest.getCurrencyCode());
         cart.setSubtotal(cart.calculateSubtotal());
         cart.setCreatedAt(ZonedDateTime.now());
+        cart.setUpdatedAt(cart.getCreatedAt());
         cart.setApplicableTaxes(taxesForRegion);
         return cart;
     }
