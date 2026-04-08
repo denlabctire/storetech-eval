@@ -7,7 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -120,7 +119,7 @@ public class Cart {
     }
 
     public int getProductQuantityOrZero(Long productId) {
-        return Objects.requireNonNullElse(1, productQuantities.getOrDefault(productId, 0));
+        return productQuantities.getOrDefault(productId, 0);
     }
 
     public void emptyCart() {

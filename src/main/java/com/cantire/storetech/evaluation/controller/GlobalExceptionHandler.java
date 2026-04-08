@@ -10,15 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.cantire.storetech.evaluation.exception.OutOfStockException;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
-    @ExceptionHandler(OutOfStockException.class)
-    public ResponseEntity<Map<String, String>> handleOutOfStock(OutOfStockException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorPayload("CONFLICT", ex.getMessage()));
-    }
 
     @ExceptionHandler({ MethodArgumentNotValidException.class, HttpMessageNotReadableException.class,
             IllegalArgumentException.class })

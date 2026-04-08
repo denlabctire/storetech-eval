@@ -101,7 +101,7 @@ class CartServiceMockitoTest {
         assertEquals(1L, item.getProductId());
         assertEquals("Test Product 1", item.getProductName());
         assertEquals("SKU-001", item.getSku());
-        assertEquals(1, item.getQuantity());
+        assertEquals(2, item.getQuantity());
         assertEquals(new BigDecimal("29.99"), item.getPrice());
         assertEquals("CAD", item.getCurrencyCode());
 

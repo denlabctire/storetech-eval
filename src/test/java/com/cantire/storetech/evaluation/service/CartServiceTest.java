@@ -1,16 +1,13 @@
 package com.cantire.storetech.evaluation.service;
 
-import com.cantire.storetech.evaluation.dto.CartSaveRequest;
-import com.cantire.storetech.evaluation.dto.CartSaveResponse;
-import com.cantire.storetech.evaluation.exception.InvalidCurrencyCodeException;
-import com.cantire.storetech.evaluation.model.Product;
-import com.cantire.storetech.evaluation.repo.CartRepository;
-import com.cantire.storetech.evaluation.repo.ProductRepository;
-import com.cantire.storetech.evaluation.repo.TaxInfoRepository;
+import java.math.BigDecimal;
+
 import org.hibernate.ObjectNotFoundException;
 import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,17 +18,18 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.math.BigDecimal;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.cantire.storetech.evaluation.dto.CartSaveRequest;
+import com.cantire.storetech.evaluation.dto.CartSaveResponse;
+import com.cantire.storetech.evaluation.exception.InvalidCurrencyCodeException;
+import com.cantire.storetech.evaluation.model.Product;
+import com.cantire.storetech.evaluation.repo.CartRepository;
+import com.cantire.storetech.evaluation.repo.ProductRepository;
+import com.cantire.storetech.evaluation.repo.TaxInfoRepository;
 
 /**
  * SpringBootTest for CartService.
  * Tests adding valid and invalid products to cart.
  */
-@Disabled
 @SpringBootTest
 @Testcontainers
 class CartServiceTest {
