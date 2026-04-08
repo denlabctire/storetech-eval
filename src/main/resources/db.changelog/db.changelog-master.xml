@@ -8,5 +8,6 @@
     <include file="db.changelog/changelog-1.0-initial-schema.xml"/>
     <include file="db.changelog/changelog-2.0-sample-data.xml"/>
     <include file="db.changelog/changelog-5.0-cart-created-at.xml"/>
+    <include file="db.changelog/changelog-6.0-customer-schema.xml"/>
 
 </databaseChangeLog>
