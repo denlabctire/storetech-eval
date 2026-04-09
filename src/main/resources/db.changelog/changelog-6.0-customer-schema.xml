@@ -17,7 +17,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="auto_pay_enabled" type="BOOLEAN" defaultValueBoolean="false">
-                <constraints nullable="false"/>
+                <constraints nullable="true"/>
             </column>
         </createTable>
     </changeSet>
@@ -51,6 +51,13 @@
             <column name="first_name" value="John"/>
             <column name="last_name" value="Smith"/>
             <column name="auto_pay_enabled" valueBoolean="false"/>
+        </insert>
+
+        <insert tableName="customer">
+            <column name="id" value="3"/>
+            <column name="first_name" value="Alex"/>
+            <column name="last_name" value="Taylor"/>
+            <column name="auto_pay_enabled" valueComputed="NULL"/>
         </insert>
     </changeSet>
 
