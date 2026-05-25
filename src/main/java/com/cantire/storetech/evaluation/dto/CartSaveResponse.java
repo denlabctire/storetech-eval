@@ -1,14 +1,12 @@
 package com.cantire.storetech.evaluation.dto;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.List;
-
-import com.cantire.storetech.evaluation.model.CartType;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.List;
 
 /**
  * Response DTO for cart save operation.
@@ -23,8 +21,6 @@ public class CartSaveResponse {
     private Integer totalItems; // sum of all item quantities in the cart
 
     private BigDecimal subtotal;
-
-    private CartType cartType;
 
     private ZonedDateTime createdAt;
 

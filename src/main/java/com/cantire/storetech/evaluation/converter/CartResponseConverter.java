@@ -23,7 +23,6 @@ public class CartResponseConverter {
         response.setCartId(cart.getId());
         response.setTotalItems(cart.getProductQuantities().values().stream().mapToInt(Integer::intValue).sum());
         response.setSubtotal(cart.getSubtotal());
-        response.setCartType(cart.getCartType());
         response.setCreatedAt(cart.getCreatedAt());
         response.setCurrencyCode(cart.getCurrencyCode());
         response.setRegion(cart.getRegion());

@@ -1,5 +1,14 @@
 package com.cantire.storetech.evaluation.converter;
 
+import com.cantire.storetech.evaluation.dto.CartSaveResponse;
+import com.cantire.storetech.evaluation.model.Cart;
+import com.cantire.storetech.evaluation.model.PriceInfo;
+import com.cantire.storetech.evaluation.model.Product;
+import com.cantire.storetech.evaluation.model.TaxInfo;
+import com.cantire.storetech.evaluation.model.TaxInfo.TaxType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -10,16 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.cantire.storetech.evaluation.dto.CartSaveResponse;
-import com.cantire.storetech.evaluation.model.Cart;
-import com.cantire.storetech.evaluation.model.CartType;
-import com.cantire.storetech.evaluation.model.PriceInfo;
-import com.cantire.storetech.evaluation.model.Product;
-import com.cantire.storetech.evaluation.model.TaxInfo;
-import com.cantire.storetech.evaluation.model.TaxInfo.TaxType;
 
 /**
  * Unit tests for CartResponseConverter.
@@ -69,7 +68,6 @@ class CartResponseConverterTest {
         cart.setId(1L);
         cart.setRegion("ON");
         cart.setCurrencyCode("CAD");
-        cart.setCartType(CartType.REWARD_ELIGIBLE);
         cartCreatedAt = ZonedDateTime.now().minusMinutes(5);
         cart.setCreatedAt(cartCreatedAt);
         cart.setSubtotal(new BigDecimal("69.97"));
@@ -99,7 +97,6 @@ class CartResponseConverterTest {
         assertEquals(1L, response.getCartId());
         assertEquals(3, response.getTotalItems());
         assertEquals(new BigDecimal("69.97"), response.getSubtotal());
-        assertEquals(CartType.REWARD_ELIGIBLE, response.getCartType());
         assertEquals(cartCreatedAt, response.getCreatedAt());
         assertEquals("CAD", response.getCurrencyCode());
         assertEquals("ON", response.getRegion());
@@ -206,18 +203,6 @@ class CartResponseConverterTest {
         // Then
         assertNotNull(response.getTaxBreakdown());
         assertTrue(response.getTaxBreakdown().isEmpty());
-    }
-
-    @Test
-    void testToResponse_WithNullCartType_ReturnsNullCartType() {
-        // Given
-        cart.setCartType(null);
-
-        // When
-        CartSaveResponse response = CartResponseConverter.toResponse(cart, true, "Success");
-
-        // Then
-        assertNull(response.getCartType());
     }
 
     @Test
